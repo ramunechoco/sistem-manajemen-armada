@@ -81,7 +81,6 @@ export default function MultiSelect<Option extends SelectOption>({
   return (
     <MenuFooterContext.Provider value={menuFooter}>
       <Select<Option, true>
-        unstyled
         isMulti
         isClearable
         isSearchable={isSearchable}
@@ -101,30 +100,6 @@ export default function MultiSelect<Option extends SelectOption>({
         loadingMessage={() => loadingMessage}
         noOptionsMessage={() => noOptionsMessage}
         components={{ MenuList }}
-        classNames={{
-          control: ({ isFocused, isDisabled: disabled }) =>
-            `min-h-10 rounded-md border bg-white px-2 text-sm ${
-              isFocused ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-300'
-            } ${disabled ? 'cursor-not-allowed bg-slate-50 opacity-60' : 'cursor-pointer'}`,
-          placeholder: () => 'text-slate-400',
-          valueContainer: () => 'gap-1 py-1',
-          multiValue: () => 'rounded bg-slate-100 text-xs text-slate-700',
-          multiValueLabel: () => 'px-2 py-0.5',
-          multiValueRemove: () => 'rounded-r px-1 hover:bg-red-100 hover:text-red-700',
-          indicatorsContainer: () => 'gap-1 text-slate-400',
-          clearIndicator: () => 'p-1 hover:text-slate-700',
-          dropdownIndicator: () => 'p-1 hover:text-slate-700',
-          indicatorSeparator: () => 'my-2 w-px bg-slate-200',
-          loadingIndicator: () => 'px-1',
-          menu: () => 'z-20 mt-1 rounded-md border border-slate-200 bg-white shadow-lg',
-          menuList: () => 'py-1',
-          option: ({ isFocused, isSelected }) =>
-            `cursor-pointer px-3 py-2 text-sm ${isFocused ? 'bg-slate-100' : ''} ${
-              isSelected ? 'font-medium text-blue-700' : 'text-slate-700'
-            }`,
-          noOptionsMessage: () => 'px-3 py-2 text-sm text-slate-500',
-          loadingMessage: () => 'px-3 py-2 text-sm text-slate-500',
-        }}
       />
     </MenuFooterContext.Provider>
   )
