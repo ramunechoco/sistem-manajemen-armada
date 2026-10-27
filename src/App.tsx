@@ -3,6 +3,7 @@ import { useVehicles } from '@/hooks/useVehicles'
 import type { VehicleFilterParams } from '@/api/vehicles'
 import Loader, { Spinner } from '@/components/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
+import VehicleGrid from '@/components/VehicleGrid'
 import { DEFAULT_PAGE_SIZE, type PageSize } from '@/constants'
 
 function App() {
@@ -39,14 +40,15 @@ function App() {
           Filter Rute &amp; Trip
         </section>
 
-        <section
-          aria-label="Daftar kendaraan"
-          className="flex min-h-64 flex-col items-center justify-center gap-4 rounded-lg border border-slate-200 bg-white p-4"
-        >
-          {isPending ? (
-            <Loader label="Memuat data kendaraan…" />
-          ) : !items ? (
-            <ErrorMessage error={error} onRetry={handleRefresh} />
+        <section aria-label="Daftar kendaraan" className="space-y-4">
+          {isPending || !items ? (
+            <div className="flex min-h-64 items-center justify-center rounded-lg border border-slate-200 bg-white p-4">
+              {isPending ? (
+                <Loader label="Memuat data kendaraan…" />
+              ) : (
+                <ErrorMessage error={error} onRetry={handleRefresh} />
+              )}
+            </div>
           ) : (
             <>
               {error && <ErrorMessage error={error} variant="inline" />}
@@ -57,6 +59,7 @@ function App() {
                 {isCountPending && ' (menghitung total…)'}
                 {` · ${items.length} dimuat di halaman ini`}
               </p>
+              <VehicleGrid vehicles={items} />
             </>
           )}
         </section>
