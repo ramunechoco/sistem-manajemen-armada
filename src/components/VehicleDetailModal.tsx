@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { Suspense, lazy, useEffect, useRef, type ReactNode } from 'react'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import type { Vehicle } from '@/types/vehicle'
@@ -14,7 +14,10 @@ import {
 } from '@/utils/format'
 import StatusBadge from '@/components/StatusBadge'
 import ErrorMessage from '@/components/ErrorMessage'
-import { Spinner } from '@/components/Loader'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import Loader, { Spinner } from '@/components/Loader'
+
+const VehicleMap = lazy(() => import('@/components/VehicleMap'))
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -143,6 +146,31 @@ export default function VehicleDetailModal({ vehicle, onClose }: VehicleDetailMo
               <Field label="Okupansi">{formatOccupancy(vehicle.occupancyStatus)}</Field>
               <Field label="Layanan">{formatRevenue(vehicle.revenue)}</Field>
             </Fields>
+          </Section>
+
+          <Section title="Lokasi">
+            <ErrorBoundary
+              fallback={
+                <p role="alert" className="text-sm text-amber-800">
+                  Peta tidak dapat dimuat. Periksa koneksi internet Anda, lalu buka kembali detail
+                  kendaraan.
+                </p>
+              }
+            >
+              <Suspense
+                fallback={
+                  <div className="flex h-64 items-center justify-center rounded-lg border border-slate-200">
+                    <Loader label="Memuat peta…" />
+                  </div>
+                }
+              >
+                <VehicleMap
+                  latitude={vehicle.latitude}
+                  longitude={vehicle.longitude}
+                  color={route.data?.color}
+                />
+              </Suspense>
+            </ErrorBoundary>
           </Section>
 
           <Section title="Rute">
