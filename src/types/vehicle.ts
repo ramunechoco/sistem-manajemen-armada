@@ -44,6 +44,7 @@ export interface Vehicle {
   speed: number | null
   directionId: 0 | 1 | null
   occupancyStatus: OccupancyStatus | null
+  revenue: 'REVENUE' | 'NON_REVENUE'
   routeId: string | null
   tripId: string | null
   stopId: string | null

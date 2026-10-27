@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/client'
-import type { JsonApiCollection } from '@/types/api'
-import type { Route, RouteResource } from '@/types/route'
+import type { JsonApiCollection, JsonApiDocument } from '@/types/api'
+import type { Route, RouteDetail, RouteDetailResource, RouteResource } from '@/types/route'
 import { getPageOffset } from '@/utils/jsonapi'
 
 export function toRoute(resource: RouteResource): Route {
@@ -33,4 +33,20 @@ export async function getRoutePage(
 
   const { data, links } = response.data
   return { routes: data.map(toRoute), nextOffset: getPageOffset(links?.next) }
+}
+
+export async function getRoute(id: string, signal?: AbortSignal): Promise<RouteDetail> {
+  const response = await apiClient.get<JsonApiDocument<RouteDetailResource>>(
+    `/routes/${encodeURIComponent(id)}`,
+    { signal },
+  )
+
+  const resource = response.data.data
+  return {
+    ...toRoute(resource),
+    description: resource.attributes.description,
+    color: resource.attributes.color,
+    directionNames: resource.attributes.direction_names,
+    directionDestinations: resource.attributes.direction_destinations,
+  }
 }

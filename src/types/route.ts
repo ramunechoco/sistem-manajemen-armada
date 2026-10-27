@@ -16,3 +16,19 @@ export interface Route {
   longName: string
   type: RouteType
 }
+
+export interface RouteDetailAttributes extends RouteAttributes {
+  description: string | null
+  color: string | null
+  direction_names: (string | null)[]
+  direction_destinations: (string | null)[]
+}
+
+export type RouteDetailResource = JsonApiResource<'route', RouteDetailAttributes>
+
+export interface RouteDetail extends Route {
+  description: string | null
+  color: string | null
+  directionNames: (string | null)[]
+  directionDestinations: (string | null)[]
+}

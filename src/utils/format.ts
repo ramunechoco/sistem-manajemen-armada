@@ -1,6 +1,6 @@
 import type { Route } from '@/types/route'
 import type { Trip } from '@/types/trip'
-import type { VehicleStatus } from '@/types/vehicle'
+import type { OccupancyStatus, Vehicle, VehicleStatus } from '@/types/vehicle'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 const ISO_TIMESTAMP =
@@ -30,7 +30,39 @@ export function formatCoordinate(value: number): string {
 }
 
 export function formatRouteLabel(route: Route): string {
-  return route.shortName ? `${route.shortName} · ${route.longName}` : route.longName
+  return [route.shortName, route.longName].filter(Boolean).join(' · ') || route.id
+}
+
+const ROUTE_TYPE_LABELS: Record<Route['type'], string> = {
+  0: 'Light rail',
+  1: 'Kereta bawah tanah',
+  2: 'Kereta komuter',
+  3: 'Bus',
+  4: 'Kapal feri',
+}
+
+export function formatRouteType(type: Route['type']): string {
+  return ROUTE_TYPE_LABELS[type] ?? String(type)
+}
+
+const OCCUPANCY_LABELS: Record<OccupancyStatus, string> = {
+  EMPTY: 'Kosong',
+  MANY_SEATS_AVAILABLE: 'Banyak kursi tersedia',
+  FEW_SEATS_AVAILABLE: 'Sedikit kursi tersedia',
+  STANDING_ROOM_ONLY: 'Hanya tempat berdiri',
+  CRUSHED_STANDING_ROOM_ONLY: 'Sangat padat',
+  FULL: 'Penuh',
+  NOT_ACCEPTING_PASSENGERS: 'Tidak menerima penumpang',
+  NO_DATA_AVAILABLE: 'Tidak ada data',
+  NOT_BOARDABLE: 'Tidak dapat dinaiki',
+}
+
+export function formatOccupancy(status: OccupancyStatus | null): string {
+  return status ? (OCCUPANCY_LABELS[status] ?? status) : 'Tidak ada data'
+}
+
+export function formatRevenue(revenue: Vehicle['revenue']): string {
+  return revenue === 'REVENUE' ? 'Melayani penumpang' : 'Tidak melayani penumpang'
 }
 
 export function formatTripLabel(trip: Trip): string {

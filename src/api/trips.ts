@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { JsonApiCollection } from '@/types/api'
+import type { JsonApiCollection, JsonApiDocument } from '@/types/api'
 import type { Trip, TripResource } from '@/types/trip'
 import { getPageOffset } from '@/utils/jsonapi'
 
@@ -41,4 +41,13 @@ export async function getTripPage(
 
   const { data, links } = response.data
   return { trips: data.map(toTrip), nextOffset: getPageOffset(links?.next) }
+}
+
+export async function getTrip(id: string, signal?: AbortSignal): Promise<Trip> {
+  const response = await apiClient.get<JsonApiDocument<TripResource>>(
+    `/trips/${encodeURIComponent(id)}`,
+    { params: { 'fields[trip]': 'headsign,name,direction_id,route' }, signal },
+  )
+
+  return toTrip(response.data.data)
 }

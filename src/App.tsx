@@ -7,6 +7,8 @@ import ErrorMessage from '@/components/ErrorMessage'
 import VehicleGrid from '@/components/VehicleGrid'
 import Pagination from '@/components/Pagination'
 import VehicleFilters from '@/components/VehicleFilters'
+import VehicleDetailModal from '@/components/VehicleDetailModal'
+import type { Vehicle } from '@/types/vehicle'
 
 function App() {
   const [filters, setFilters] = useState<VehicleFilterParams>({ routeIds: [], tripIds: [] })
@@ -17,8 +19,13 @@ function App() {
     pageSize,
   )
   const listRef = useRef<HTMLElement>(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
 
   clampPage(totalPages)
+
+  const detailVehicle = selectedVehicle
+    ? (items?.find((vehicle) => vehicle.id === selectedVehicle.id) ?? selectedVehicle)
+    : null
 
   const showPagination = total !== null ? total > 0 : items !== undefined
 
@@ -66,7 +73,7 @@ function App() {
           ) : (
             <>
               {error && <ErrorMessage error={error} variant="inline" />}
-              <VehicleGrid vehicles={items} />
+              <VehicleGrid vehicles={items} onSelect={setSelectedVehicle} />
             </>
           )}
           {showPagination && (
@@ -82,6 +89,14 @@ function App() {
           )}
         </section>
       </main>
+
+      {detailVehicle && (
+        <VehicleDetailModal
+          key={detailVehicle.id}
+          vehicle={detailVehicle}
+          onClose={() => setSelectedVehicle(null)}
+        />
+      )}
     </div>
   )
 }

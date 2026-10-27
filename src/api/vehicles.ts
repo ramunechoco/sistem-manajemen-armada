@@ -23,6 +23,7 @@ export function toVehicle(resource: VehicleResource): Vehicle {
     speed: a.speed,
     directionId: a.direction_id,
     occupancyStatus: a.occupancy_status,
+    revenue: a.revenue,
     routeId: r?.route?.data?.id ?? null,
     tripId: r?.trip?.data?.id ?? null,
     stopId: r?.stop?.data?.id ?? null,
