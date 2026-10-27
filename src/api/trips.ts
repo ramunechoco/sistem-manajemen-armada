@@ -13,8 +13,12 @@ export function toTrip(resource: TripResource): Trip {
   }
 }
 
+const BOSTON_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' })
+// MBTA's service day runs past midnight, until about 3 AM
+const SERVICE_DAY_START_MS = 3 * 60 * 60 * 1000
+
 export function getServiceDate(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date())
+  return BOSTON_DATE.format(Date.now() - SERVICE_DAY_START_MS)
 }
 
 export interface TripPage {
