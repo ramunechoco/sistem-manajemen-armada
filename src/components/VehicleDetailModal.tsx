@@ -152,8 +152,8 @@ export default function VehicleDetailModal({ vehicle, onClose }: VehicleDetailMo
             <ErrorBoundary
               fallback={
                 <p role="alert" className="text-sm text-amber-800">
-                  Peta tidak dapat dimuat. Periksa koneksi internet Anda, lalu buka kembali detail
-                  kendaraan.
+                  Peta tidak dapat dimuat. Periksa koneksi internet Anda, lalu muat ulang halaman di
+                  browser.
                 </p>
               }
             >
