@@ -82,6 +82,7 @@ interface VehicleDetailModalProps {
 export default function VehicleDetailModal({ vehicle, onClose }: VehicleDetailModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const { route, trip, stop } = useVehicleDetails(vehicle)
+  const pressedBackdrop = useRef(false)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -101,8 +102,11 @@ export default function VehicleDetailModal({ vehicle, onClose }: VehicleDetailMo
     <dialog
       ref={dialogRef}
       onClose={onClose}
+      onPointerDown={(e) => {
+        pressedBackdrop.current = e.target === e.currentTarget
+      }}
       onClick={(e) => {
-        if (e.target === e.currentTarget) closeDialog()
+        if (pressedBackdrop.current && e.target === e.currentTarget) closeDialog()
       }}
       aria-labelledby="vehicle-detail-title"
       className="m-auto w-[calc(100%-2rem)] max-w-2xl rounded-xl bg-white p-0 text-slate-900 shadow-xl backdrop:bg-slate-900/50"
