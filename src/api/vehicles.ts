@@ -49,7 +49,7 @@ export async function getVehicleBatch(
   const response = await apiClient.get<JsonApiCollection<VehicleResource>>('/vehicles', {
     params: {
       ...buildVehicleParams(filters),
-      sort: 'label',
+      sort: 'label,id',
       'page[offset]': offset,
       'page[limit]': limit,
     },

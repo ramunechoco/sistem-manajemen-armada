@@ -20,7 +20,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-xs text-slate-500">Kendaraan</p>
-          <h3 className="text-lg font-semibold">{vehicle.label}</h3>
+          <h2 className="text-lg font-semibold">{vehicle.label}</h2>
         </div>
         {vehicle.routeId && (
           <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
