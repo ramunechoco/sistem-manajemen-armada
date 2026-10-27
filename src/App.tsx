@@ -6,9 +6,10 @@ import Loader, { Spinner } from '@/components/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
 import VehicleGrid from '@/components/VehicleGrid'
 import Pagination from '@/components/Pagination'
+import VehicleFilters from '@/components/VehicleFilters'
 
 function App() {
-  const [filters] = useState<VehicleFilterParams>({ routeIds: [], tripIds: [] })
+  const [filters, setFilters] = useState<VehicleFilterParams>({ routeIds: [], tripIds: [] })
   const { page, pageSize, setPage, setPageSize, clampPage } = usePagination()
   const { items, total, totalPages, isPending, isFetching, error, refresh } = useVehicles(
     filters,
@@ -22,6 +23,11 @@ function App() {
   const showPagination = total !== null ? total > 0 : items !== undefined
 
   const handleRefresh = () => void refresh()
+
+  const handleApplyFilters = (nextFilters: VehicleFilterParams) => {
+    setFilters(nextFilters)
+    setPage(1)
+  }
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage)
@@ -46,12 +52,7 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
-        <section
-          aria-label="Filter kendaraan"
-          className="rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-400"
-        >
-          Filter Rute &amp; Trip
-        </section>
+        <VehicleFilters applied={filters} onApply={handleApplyFilters} />
 
         <section ref={listRef} aria-label="Daftar kendaraan" className="scroll-mt-6 space-y-4">
           {isPending || !items ? (

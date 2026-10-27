@@ -1,3 +1,5 @@
+import type { Route } from '@/types/route'
+import type { Trip } from '@/types/trip'
 import type { VehicleStatus } from '@/types/vehicle'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
@@ -25,4 +27,13 @@ export function formatTimestamp(timestamp: string): string {
 
 export function formatCoordinate(value: number): string {
   return value.toFixed(5)
+}
+
+export function formatRouteLabel(route: Route): string {
+  return route.shortName ? `${route.shortName} · ${route.longName}` : route.longName
+}
+
+export function formatTripLabel(trip: Trip): string {
+  const route = trip.routeId ? `${trip.routeId} → ` : ''
+  return `${route}${trip.headsign} (${trip.name || trip.id})`
 }
