@@ -13,6 +13,7 @@ const queryClient = new QueryClient({
         if (status !== undefined && status >= 400 && status < 500) return false
         return failureCount < 1
       },
+      // Manual refresh (TBD)
       refetchOnWindowFocus: false,
       staleTime: 30_000,
     },
