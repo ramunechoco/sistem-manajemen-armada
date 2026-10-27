@@ -1,19 +1,32 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useVehicles } from '@/hooks/useVehicles'
+import { usePagination } from '@/hooks/usePagination'
 import type { VehicleFilterParams } from '@/api/vehicles'
 import Loader, { Spinner } from '@/components/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
 import VehicleGrid from '@/components/VehicleGrid'
-import { DEFAULT_PAGE_SIZE, type PageSize } from '@/constants'
+import Pagination from '@/components/Pagination'
 
 function App() {
   const [filters] = useState<VehicleFilterParams>({ routeIds: [], tripIds: [] })
-  const [page] = useState(1)
-  const [pageSize] = useState<PageSize>(DEFAULT_PAGE_SIZE)
-  const { items, total, minTotal, isPending, isCountPending, isFetching, error, refresh } =
-    useVehicles(filters, page, pageSize)
+  const { page, pageSize, setPage, setPageSize, clampPage } = usePagination()
+  const { items, total, totalPages, isPending, isFetching, error, refresh } = useVehicles(
+    filters,
+    page,
+    pageSize,
+  )
+  const listRef = useRef<HTMLElement>(null)
+
+  clampPage(totalPages)
+
+  const showPagination = total !== null ? total > 0 : items !== undefined
 
   const handleRefresh = () => void refresh()
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage)
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -40,7 +53,7 @@ function App() {
           Filter Rute &amp; Trip
         </section>
 
-        <section aria-label="Daftar kendaraan" className="space-y-4">
+        <section ref={listRef} aria-label="Daftar kendaraan" className="scroll-mt-6 space-y-4">
           {isPending || !items ? (
             <div className="flex min-h-64 items-center justify-center rounded-lg border border-slate-200 bg-white p-4">
               {isPending ? (
@@ -52,15 +65,19 @@ function App() {
           ) : (
             <>
               {error && <ErrorMessage error={error} variant="inline" />}
-              <p className="text-sm text-slate-600">
-                {total !== null
-                  ? `${total} kendaraan ditemukan`
-                  : `Sedikitnya ${minTotal ?? items.length} kendaraan ditemukan`}
-                {isCountPending && ' (menghitung total…)'}
-                {` · ${items.length} dimuat di halaman ini`}
-              </p>
               <VehicleGrid vehicles={items} />
             </>
+          )}
+          {showPagination && (
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              totalPages={totalPages}
+              itemCount={items?.length ?? 0}
+              onPageChange={handlePageChange}
+              onPageSizeChange={setPageSize}
+            />
           )}
         </section>
       </main>
