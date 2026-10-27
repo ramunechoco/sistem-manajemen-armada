@@ -25,6 +25,17 @@ export function formatTimestamp(timestamp: string): string {
   return `${Number(day)} ${MONTHS[Number(month) - 1]} ${year}, ${hour}:${minute}:${second} ${zone}`
 }
 
+const CLOCK_TIME = new Intl.DateTimeFormat('id-ID', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  timeZoneName: 'short',
+})
+
+export function formatClockTime(epochMs: number): string {
+  return CLOCK_TIME.format(epochMs)
+}
+
 export function formatCoordinate(value: number): string {
   return value.toFixed(5)
 }

@@ -43,6 +43,7 @@ export function useVehicles(filters: VehicleFilterParams, page: number, pageSize
     items: batch?.vehicles.slice(sliceStart, sliceStart + pageSize),
     total,
     totalPages: total === null ? null : Math.max(1, Math.ceil(total / pageSize)),
+    fetchedAt: batchQuery.dataUpdatedAt || null,
     isPending: batchQuery.isPending,
     isFetching: batchQuery.isFetching || countQuery.isFetching,
     error: batchQuery.error ?? countQuery.error,

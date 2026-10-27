@@ -9,15 +9,13 @@ import Pagination from '@/components/Pagination'
 import VehicleFilters from '@/components/VehicleFilters'
 import VehicleDetailModal from '@/components/VehicleDetailModal'
 import type { Vehicle } from '@/types/vehicle'
+import { formatClockTime } from '@/utils/format'
 
 function App() {
   const [filters, setFilters] = useState<VehicleFilterParams>({ routeIds: [], tripIds: [] })
   const { page, pageSize, setPage, setPageSize, clampPage } = usePagination()
-  const { items, total, totalPages, isPending, isFetching, error, refresh } = useVehicles(
-    filters,
-    page,
-    pageSize,
-  )
+  const { items, total, totalPages, fetchedAt, isPending, isFetching, error, refresh } =
+    useVehicles(filters, page, pageSize)
   const listRef = useRef<HTMLElement>(null)
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
 
@@ -44,17 +42,24 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6">
           <h1 className="text-2xl font-bold">Sistem Manajemen Armada</h1>
-          <button
-            type="button"
-            onClick={handleRefresh}
-            disabled={isFetching}
-            className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isFetching && <Spinner className="size-4 border-2" />}
-            {isFetching ? 'Refreshing page...' : 'Refresh'}
-          </button>
+          <div className="flex items-center gap-3">
+            {fetchedAt !== null && (
+              <p className="text-xs text-slate-500 sm:text-sm">
+                Data diambil pukul {formatClockTime(fetchedAt)}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={isFetching}
+              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isFetching && <Spinner className="size-4 border-2" />}
+              {isFetching ? 'Loading...' : 'Refresh'}
+            </button>
+          </div>
         </div>
       </header>
 
