@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getServiceDate, getTripPage } from '@/api/trips'
-import { DROPDOWN_BATCH_SIZE } from '@/constants'
+import { TRIP_BATCH_SIZE } from '@/constants'
 
 export function useTrips(routeIds: string[], enabled: boolean) {
   const sortedRouteIds = [...routeIds].sort()
@@ -11,7 +11,7 @@ export function useTrips(routeIds: string[], enabled: boolean) {
     queryFn: ({ pageParam, signal }) =>
       getTripPage(
         { routeIds: sortedRouteIds, date },
-        { offset: pageParam, limit: DROPDOWN_BATCH_SIZE },
+        { offset: pageParam, limit: TRIP_BATCH_SIZE },
         signal,
       ),
     initialPageParam: 0,

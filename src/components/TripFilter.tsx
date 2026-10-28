@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTrips } from '@/hooks/useTrips'
 import { formatTripLabel } from '@/utils/format'
 import { getErrorInfo } from '@/utils/errors'
@@ -18,8 +18,25 @@ interface TripFilterProps {
 export default function TripFilter({ inputId, routeIds, value, onChange }: TripFilterProps) {
   const routesKey = [...routeIds].sort().join(',')
   const [openedFor, setOpenedFor] = useState<string | null>(null)
-  const { data, error, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } =
-    useTrips(routeIds, openedFor === routesKey)
+  const {
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    isFetchNextPageError,
+    hasNextPage,
+    fetchNextPage,
+    refetch,
+  } = useTrips(routeIds, openedFor === routesKey)
+
+  const [search, setSearch] = useState('')
+  const isSearching = search.trim() !== ''
+
+  useEffect(() => {
+    if (isSearching && hasNextPage && !isFetchingNextPage && !isFetchNextPageError) {
+      void fetchNextPage()
+    }
+  }, [isSearching, hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage])
 
   const isDisabled = routeIds.length === 0
   const options: TripOption[] =
@@ -44,7 +61,9 @@ export default function TripFilter({ inputId, routeIds, value, onChange }: TripF
   return (
     <MultiSelect
       inputId={inputId}
-      placeholder={isDisabled ? 'Pilih rute terlebih dahulu' : 'Pilih trip'}
+      placeholder={isDisabled ? 'Pilih rute terlebih dahulu' : 'Pilih atau ketik trip'}
+      isSearchable
+      onInputChange={setSearch}
       options={options}
       value={value}
       onChange={onChange}

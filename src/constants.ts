@@ -13,3 +13,4 @@ if (import.meta.env.DEV && PAGE_SIZE_OPTIONS.some((size) => VEHICLE_BATCH_SIZE %
 
 // Number of routes/trips fetched per lazy loading in the filter dropdowns
 export const DROPDOWN_BATCH_SIZE = 20
+export const TRIP_BATCH_SIZE = 100
